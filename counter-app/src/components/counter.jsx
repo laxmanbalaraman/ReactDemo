@@ -42,9 +42,13 @@ class Counter extends Component {
         // This will be Asynchronous
         console.log("id is", id);
         console.log(this.state.count);
-    }
+    };
 
-
+    handleDecrement(id) {
+        this.setState(
+            {count: this.state.count - 1}
+        )
+    };
     /*
         The render method must return only one parent element, 
         enclose the jsx inside a div tag or <React.Fragment></React.Fragment>
@@ -70,6 +74,7 @@ class Counter extends Component {
             returning our indetended function). */}
 
             <button onClick={() => this.handleIncrement(1)} className="btn btn-secondary btn-sm">Increment</button>
+            <button onClick={() => this.handleDecrement(1)} className="btn btn-secondary btn-sm m-2">Decrement</button>
 
             {/* redering lists */}
 
@@ -100,7 +105,7 @@ class Counter extends Component {
     // change badge color dynamically
     getBadgeClasses(){
         let classes = "badge m-2 badge-";
-        classes += this.state.count === 0 ? "warning" : "primary";
+        classes += this.state.count === 0 ? "warning" : this.state.count < 0 ? "danger" : "primary";
         return classes;
     }
 }
