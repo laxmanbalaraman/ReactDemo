@@ -20,8 +20,31 @@ class Counters extends Component {
   handleReset = () => {
     const counters = this.state.counters.map((counter) => {
       counter.value = 0;
+      return counter;
     });
-    console.log(this.state.counters);
+    this.setState({ counters });
+  };
+
+  handleIncrement = (c) => {
+    console.log("Increment clicked", c);
+    const counter = this.state.counters.map((counter) => {
+      if (counter.id === c.id) {
+        counter.value++;
+      }
+      return counter;
+    });
+    this.setState({ counter });
+  };
+
+  handleDecrement = (c) => {
+    console.log("Decrement clicked", c);
+    const counter = this.state.counters.map((counter) => {
+      if (counter.id === c.id) {
+        counter.value--;
+      }
+      return counter;
+    });
+    this.setState({ counter });
   };
 
   render() {
@@ -39,6 +62,8 @@ class Counters extends Component {
             // value={counter.value}
             // id={counter.id}
             handleDelete={this.handleDelete}
+            handleIncrement={this.handleIncrement}
+            handleDecrement={this.handleDecrement}
             counter={counter}
           >
             {/* can be accesesed using this.props.children */}
