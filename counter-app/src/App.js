@@ -28,24 +28,24 @@ class App extends Component {
 
   handleIncrement = (c) => {
     console.log("Increment clicked", c);
-    const counter = this.state.counters.map((counter) => {
+    const counters = this.state.counters.map((counter) => {
       if (counter.id === c.id) {
         counter.value++;
       }
       return counter;
     });
-    this.setState({ counter });
+    this.setState({ counters });
   };
 
   handleDecrement = (c) => {
     console.log("Decrement clicked", c);
-    const counter = this.state.counters.map((counter) => {
+    const counters = this.state.counters.map((counter) => {
       if (counter.id === c.id) {
         counter.value--;
       }
       return counter;
     });
-    this.setState({ counter });
+    this.setState({ counters });
   };
 
   render() {
