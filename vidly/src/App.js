@@ -4,6 +4,7 @@ import Movies from "./components/movies";
 import Customers from "./components/customers";
 import notFound from "./components/notFound";
 import Rentals from "./components/rentals";
+import MoviesForm from "./components/moviesForm";
 import "./App.css";
 import React from "react";
 
@@ -13,10 +14,11 @@ function App() {
       <NavBar />
       <main className="container">
         <Switch>
+          <Route path="/movies/:id" component={MoviesForm} />
+          <Route path="/movies" component={Movies} />
           <Route path="/customers" component={Customers} />
           <Route path="/not-found" component={notFound} />
           <Route path="/rentals" component={Rentals} />
-          <Route path="/movies" component={Movies} />
           <Redirect from="/" exact to="/movies" />
           <Redirect to="/not-found" />
         </Switch>
