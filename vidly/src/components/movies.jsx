@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { getMovies } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
 import Pagination from "./pagination";
@@ -81,20 +82,33 @@ class Movies extends Component {
           />
         </div>
         <div className="col">
-          <p>There are {totalCount} movies in the database.</p>
-          <MoviesTable
-            movies={subMovies}
-            onLike={this.handleLikeButton}
-            onDelete={this.handleDelete}
-            onSort={this.handleSort}
-            selectedColumn={selectedColumn}
-          />
-          <Pagination
-            totalCount={totalCount}
-            pageSize={pageSize}
-            currentPage={currentPage}
-            onPageChange={this.handlePageChange}
-          />
+          <div className="row">
+            <Link
+              to="/movies/new"
+              className="btn btn-primary"
+              style={{ marginBottom: 20 }}
+            >
+              New Movie
+            </Link>
+            <br />
+            <br />
+          </div>
+          <row>
+            <p>There are {totalCount} movies in the database.</p>
+            <MoviesTable
+              movies={subMovies}
+              onLike={this.handleLikeButton}
+              onDelete={this.handleDelete}
+              onSort={this.handleSort}
+              selectedColumn={selectedColumn}
+            />
+            <Pagination
+              totalCount={totalCount}
+              pageSize={pageSize}
+              currentPage={currentPage}
+              onPageChange={this.handlePageChange}
+            />
+          </row>
         </div>
       </div>
     );
