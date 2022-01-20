@@ -2,7 +2,22 @@ import React, { Component } from "react";
 import axios from "axios";
 import "./App.css";
 
+// handle unexpected error globally
+axios.interceptors.response.use(null, (error) => {
+  const expectedError =
+    error.response &&
+    error.response.status >= 400 &&
+    error.response.status < 500;
+  if (!expectedError) {
+    console.log("Logging the error", error);
+    alert("Sorry, an unexpected error occurred while deleting a post!");
+  }
+  console.log("INTERCEPTOR CALLED");
+  return Promise.reject(error);
+});
+
 const apiEndpoint = "https://jsonplaceholder.typicode.com/posts";
+
 class App extends Component {
   state = {
     posts: [],
@@ -33,9 +48,36 @@ class App extends Component {
   };
 
   handleDelete = async (post) => {
-    await axios.delete(apiEndpoint + "/" + post.id);
+    /* optimistic vs pessimistic update
+    ---------------------------------------
+    upate the state object afte the await operation assuming error can happen anytime. -> slow down the ui updating process.
+    update the state object before the await of operation assuming no error happens with the server. ->  fastens up the ui updating process.
+    if there is any error then prev state is upated with the current state. */
+
+    // implementing optimistic update
+
+    const orginalPost = this.state.posts;
     const posts = this.state.posts.filter((p) => p.id !== post.id);
     this.setState({ posts });
+    try {
+      await axios.delete(apiEndpoint + "/" + post.id);
+      // this part will be executed after the response time only if the prev line doesn't give an error
+    } catch (ex) {
+      // Expected (404: not found, 400: bad request) - CLIENT errors
+      // - display a specific error message
+
+      if (ex.response && ex.response.status === 404)
+        alert("This post has already been deleted");
+      // Unexpected (newtwork down, server down, DB down, bug)
+      // - Log them
+      // Display  a generic and friendly message.
+      // else {
+      // instead of handling unexpected errors in multiple places, handle it globally.
+      //   console.log("Logging the error", ex);
+      //   alert("Sorry, an unexpected error occurred while deleting a post!");
+      // }
+      this.setState({ posts: orginalPost });
+    }
   };
 
   render() {
