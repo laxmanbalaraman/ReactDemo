@@ -1,5 +1,5 @@
-import axios from 'axios';
-
+import axios from "axios";
+// handle unexpected error globally
 axios.interceptors.response.use(null, (error) => {
   const expectedError =
     error.response &&
@@ -7,8 +7,8 @@ axios.interceptors.response.use(null, (error) => {
     error.response.status < 500;
 
   if (!expectedError) {
-    console.log('Interceptor called');
-    alert('An unexpected error has occured');
+    console.log("Interceptor called");
+    alert("An unexpected error has occured");
   }
 
   return Promise.reject(error);
