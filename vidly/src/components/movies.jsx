@@ -6,6 +6,7 @@ import Pagination from "./pagination";
 import MoviesTable from "./moviesTable";
 import paginate from "../utils/paginate";
 import ListGroup from "./listGroups";
+import SearchBox from "./searchBox";
 import _ from "lodash";
 
 class Movies extends Component {
@@ -14,6 +15,8 @@ class Movies extends Component {
     genres: [],
     pageSize: 4,
     currentPage: 1,
+    selectedGenre: "",
+    searchQuery: null,
     selectedColumn: { path: "title", order: "asc" },
   };
 
@@ -51,11 +54,24 @@ class Movies extends Component {
   };
 
   getPagedData() {
-    const { movies, selectedGenre, selectedColumn } = this.state;
-    const filteredMovies =
+    const { movies, selectedGenre, selectedColumn, searchQuery } = this.state;
+    console.log(selectedGenre);
+    let filteredMovies = movies;
+
+    filteredMovies = searchQuery
+      ? movies.filter((movie) => {
+          return movie.title
+            .toLowerCase()
+            .startsWith(searchQuery.toLowerCase());
+        })
+      : movies;
+
+    filteredMovies =
       selectedGenre && selectedGenre._id
-        ? movies.filter((movie) => movie.genre._id === selectedGenre._id)
-        : movies;
+        ? filteredMovies.filter(
+            (movie) => movie.genre._id === selectedGenre._id
+          )
+        : filteredMovies;
 
     const sorted = _.orderBy(
       filteredMovies,
@@ -65,6 +81,10 @@ class Movies extends Component {
 
     return { totalCount: filteredMovies.length, sorted };
   }
+
+  handleSearch = (searchQuery) => {
+    this.setState({ searchQuery, selectedGenre: null, currentPage: 1 });
+  };
 
   render() {
     const { length: count } = this.state.movies;
@@ -95,6 +115,7 @@ class Movies extends Component {
           </div>
           <row>
             <p>There are {totalCount} movies in the database.</p>
+            <SearchBox onChange={this.handleSearch}></SearchBox>
             <MoviesTable
               movies={subMovies}
               onLike={this.handleLikeButton}
