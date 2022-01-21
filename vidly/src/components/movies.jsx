@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { getMovies } from "../services/fakeMovieService";
-import { getGenres } from "../services/fakeGenreService";
+import { getMovies, deleteMovie } from "../services/movieService";
+import { getGenres } from "../services/genreService";
+import { toast } from "react-toastify";
 import Pagination from "./pagination";
 import MoviesTable from "./moviesTable";
 import paginate from "../utils/paginate";
@@ -20,15 +21,28 @@ class Movies extends Component {
     selectedColumn: { path: "title", order: "asc" },
   };
 
-  componentDidMount() {
-    const genres = [{ _id: "", name: "All Genres" }, ...getGenres()];
-    this.setState({ movies: getMovies(), genres });
+  async componentDidMount() {
+    const { data } = await getGenres();
+    const genres = [{ _id: "", name: "All Genres" }, ...data];
+    const { data: movies } = await getMovies();
+    this.setState({ movies, genres });
   }
 
-  handleDelete = (movie) => {
+  handleDelete = async (movie) => {
+    const originalMovies = this.state.movies;
+    // optimistic update so a try catch block to revert to previous state if anything goes wrong.
     this.setState({
-      movies: this.state.movies.filter((m) => m._id !== movie._id),
+      movies: originalMovies.filter((m) => m._id !== movie._id),
     });
+    try {
+      await deleteMovie(movie._id);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404) {
+        console.log("could not delete a movie");
+        toast.error("This movie has already been deleted");
+      }
+      this.setState({ movies: originalMovies });
+    }
   };
 
   handleLikeButton = (movie) => {
@@ -113,7 +127,7 @@ class Movies extends Component {
             <br />
             <br />
           </div>
-          <row>
+          <div className="row">
             <p>There are {totalCount} movies in the database.</p>
             <SearchBox onChange={this.handleSearch}></SearchBox>
             <MoviesTable
@@ -129,7 +143,7 @@ class Movies extends Component {
               currentPage={currentPage}
               onPageChange={this.handlePageChange}
             />
-          </row>
+          </div>
         </div>
       </div>
     );
