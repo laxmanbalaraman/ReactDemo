@@ -1,7 +1,7 @@
 import React from "react";
 import Joi from "joi-browser";
 import Form from "./form";
-import { login } from "../services/authService";
+import auth from "../services/authService";
 
 class LoginForm extends Form {
   // always declare form field elements with empty string. if the state is null of undefined
@@ -21,9 +21,7 @@ class LoginForm extends Form {
     // call server
     const { data } = this.state;
     try {
-      const { data: jwt } = await login(data.username, data.password);
-      console.log("Submitted", jwt);
-      localStorage.setItem("token", jwt);
+      await auth.login(data.username, data.password);
       // since the app componentdidmount is renedered only once, inorder to pass the user name to state
       // we reload the page to rendet the app component again.
       window.location = "/";

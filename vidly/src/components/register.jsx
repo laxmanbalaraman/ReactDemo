@@ -1,6 +1,7 @@
 import React from "react";
 import Joi from "joi-browser";
 import * as userService from "../services/userService";
+import auth from "../services/authService";
 import Form from "./form";
 
 class Register extends Form {
@@ -20,7 +21,7 @@ class Register extends Form {
     try {
       const response = await userService.register(this.state.data);
       console.log(response);
-      localStorage.setItem("token", response.headers["x-auth-token"]);
+      auth.loginWithJwt(response.headers["x-auth-token"]);
       // since the app componentdidmount is renedered only once, inorder to pass the user name to state
       // we reload the page to rendet the app component again.
       window.location = "/";
