@@ -1,6 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
 import Joi from "joi-browser";
 import Form from "./form";
+import { login } from "../services/authService";
 
 class LoginForm extends Form {
   // always declare form field elements with empty string. if the state is null of undefined
@@ -12,16 +13,30 @@ class LoginForm extends Form {
   };
 
   schema = {
-    username: Joi.string().required(),
+    username: Joi.string().email().required(),
     password: Joi.string().required(),
   };
 
-  doSubmit = () => {
+  doSubmit = async () => {
     // call server
-    console.log("Submitted");
+    const { data } = this.state;
+    try {
+      const { data: jwt } = await login(data.username, data.password);
+      console.log("Submitted", jwt);
+      localStorage.setItem("token", jwt);
+      // since the app componentdidmount is renedered only once, inorder to pass the user name to state
+      // we reload the page to rendet the app component again.
+      window.location = "/";
+      // this.props.history.push("/");
+    } catch (ex) {
+      if (ex.response && ex.response.status === 400) {
+        const errors = { ...this.state.errors };
+        errors.username = ex.response.data;
+        this.setState({ errors });
+      }
+    }
   };
   render() {
-    const { data, errors } = this.state;
     return (
       <div>
         <h1>Login Form</h1>

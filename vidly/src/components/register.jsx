@@ -1,5 +1,5 @@
 import React from "react";
-import Joi, { errors } from "joi-browser";
+import Joi from "joi-browser";
 import * as userService from "../services/userService";
 import Form from "./form";
 
@@ -18,7 +18,13 @@ class Register extends Form {
   doSubmit = async () => {
     console.log(this.state.data);
     try {
-      await userService.register(this.state.data);
+      const response = await userService.register(this.state.data);
+      console.log(response);
+      localStorage.setItem("token", response.headers["x-auth-token"]);
+      // since the app componentdidmount is renedered only once, inorder to pass the user name to state
+      // we reload the page to rendet the app component again.
+      window.location = "/";
+      // this.props.history.push("/");
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         const errors = { ...this.state.errors };
