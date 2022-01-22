@@ -106,6 +106,7 @@ class Movies extends Component {
     if (count === 0) return <p>There are no movies in the database.</p>;
     const { sorted, totalCount } = this.getPagedData();
     const subMovies = paginate(sorted, currentPage, pageSize);
+    const { user } = this.props;
     return (
       <div className="row">
         <div className="col-3">
@@ -117,15 +118,19 @@ class Movies extends Component {
         </div>
         <div className="col">
           <div className="row">
-            <Link
-              to="/movies/new"
-              className="btn btn-primary"
-              style={{ marginBottom: 20 }}
-            >
-              New Movie
-            </Link>
-            <br />
-            <br />
+            {user && (
+              <React.Fragment>
+                <Link
+                  to="/movies/new"
+                  className="btn btn-primary"
+                  style={{ marginBottom: 20 }}
+                >
+                  New Movie
+                </Link>
+                <br />
+                <br />
+              </React.Fragment>
+            )}
           </div>
           <div className="row">
             <p>There are {totalCount} movies in the database.</p>

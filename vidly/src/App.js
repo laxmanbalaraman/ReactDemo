@@ -10,10 +10,10 @@ import MoviesForm from "./components/moviesForm";
 import Register from "./components/register";
 import LoginForm from "./components/loginForm";
 import Logout from "./components/logout";
+import ProtectedRoute from "./components/protectedRoute";
 import auth from "./services/authService";
 import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
-
 class App extends Component {
   state = {};
 
@@ -29,8 +29,11 @@ class App extends Component {
         <NavBar user={this.state.user} />
         <main className="container">
           <Switch>
-            <Route path="/movies/:id" component={MoviesForm} />
-            <Route path="/movies" component={Movies} />
+            <ProtectedRoute path="/movies/:id" component={MoviesForm} />
+            <Route
+              path="/movies"
+              render={(props) => <Movies {...props} user={this.state.user} />}
+            />
             <Route path="/customers" component={Customers} />
             <Route path="/not-found" component={notFound} />
             <Route path="/rentals" component={Rentals} />

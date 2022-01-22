@@ -24,7 +24,8 @@ class LoginForm extends Form {
       await auth.login(data.username, data.password);
       // since the app componentdidmount is renedered only once, inorder to pass the user name to state
       // we reload the page to rendet the app component again.
-      window.location = "/";
+      const { state } = this.props.location;
+      window.location = state ? state.from.pathname : "/";
       // this.props.history.push("/");
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
