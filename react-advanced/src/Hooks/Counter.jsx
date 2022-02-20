@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import useDocumentTitle from "./useDocumentTitle";
 
 function Counter(props) {
   // useState returns array of two element, one, the state element, two, the state function to change the value of that state element
@@ -12,6 +13,9 @@ function Counter(props) {
 
   const [count, setCount] = useState(0);
   const [name, setName] = useState("");
+
+  useDocumentTitle(`${name} has clicked ${count} times`);
+
   return (
     <React.Fragment>
       <input text={name} onChange={(e) => setName(e.target.value)} /> <br />
