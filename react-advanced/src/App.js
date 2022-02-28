@@ -3,9 +3,10 @@ import React, { Component } from "react";
 import Movies from "./Components/Movies";
 import Counter from "./Hooks/Counter";
 import User from "./Hooks/User";
-import UserContext from "./Context/userContext";
 import MoviePage from "./Components/MoviePage";
 import Login from "./Components/Login";
+import UserContext from "./Context/userContext";
+import CartContext from "./Context/cartContext";
 
 class App extends Component {
   // use this state variable in another component easily using context drilling
@@ -25,17 +26,19 @@ class App extends Component {
     return (
       // the value property where you send the state variables.
       // UserContext.Provider provides state variables to be consumed by another component down the hierarchy
-      <UserContext.Provider
-        value={{
-          currentUser: this.state.currentUser,
-          onLoggedIn: this.handleLoggedIn,
-        }}
-      >
-        <div>
-          <MoviePage />
-          <Login />
-        </div>
-      </UserContext.Provider>
+      <CartContext.Provider value={{ cart: [] }}>
+        <UserContext.Provider
+          value={{
+            currentUser: this.state.currentUser,
+            onLoggedIn: this.handleLoggedIn,
+          }}
+        >
+          <div>
+            <MoviePage />
+            <Login />
+          </div>
+        </UserContext.Provider>
+      </CartContext.Provider>
     );
   }
 }
