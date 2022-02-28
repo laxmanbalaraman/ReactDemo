@@ -7,8 +7,8 @@ import UserContext from "../Context/userContext";
 // easier to use in componentDidMount
 
 const MovieRow = () => {
-  const currentUser = useContext(UserContext);
-  return <div>{currentUser.name}</div>;
+  const User = useContext(UserContext);
+  return <div>{User.currentUser ? User.currentUser.name : ""}</div>;
 };
 
 export default MovieRow;
